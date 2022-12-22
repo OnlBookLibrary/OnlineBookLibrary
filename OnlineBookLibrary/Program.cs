@@ -1,4 +1,9 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using OnlineBookLibrary.Data;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<OnlineBookLibraryContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("OnlineBookLibraryContext") ?? throw new InvalidOperationException("Connection string 'OnlineBookLibraryContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
