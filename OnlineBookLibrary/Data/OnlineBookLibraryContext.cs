@@ -15,5 +15,7 @@ namespace OnlineBookLibrary.Data
         }
 
         public DbSet<OnlineBookLibrary.Models.User> User { get; set; } = default!;
+
+        public DbSet<OnlineBookLibrary.Models.Genre> Genre { get; set; } = default!;
     }
 }
