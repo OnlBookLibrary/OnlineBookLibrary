@@ -12,7 +12,8 @@ namespace OnlineBookLibrary.Models
     [PrimaryKey(nameof(Id))]
     public class User
     {
-        public string Id { get; set; }
+        [Key]
+        public int Id { get; set; }
 
         public string Name { get; set; }
 
@@ -29,6 +30,6 @@ namespace OnlineBookLibrary.Models
 
         public string Password { get; set; }
 
-        public ICollection<Order> orders { get; set; }
+        public ICollection<Order>? orders { get; set; }
     }
 }

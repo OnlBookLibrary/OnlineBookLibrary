@@ -12,11 +12,11 @@ namespace OnlineBookLibrary.Models
     [PrimaryKey(nameof(Id))]
     public class OrderDetails
     {
-        public string Id { get; set; }
-        public string BookId { get; set; }
-        public string OrderId { get; set; }
+        public int Id { get; set; }
+        public int BookId { get; set; }
+        public int OrderId { get; set; }
 
-        public Order Order { get; set; }
-        public Book Book { get; set; }
+        public Order? Order { get; set; }
+        public Book? Book { get; set; }
     }
 }
