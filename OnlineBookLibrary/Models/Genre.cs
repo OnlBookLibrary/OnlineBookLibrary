@@ -1,19 +1,13 @@
-﻿using Microsoft.Build.Framework;
-using System.ComponentModel.DataAnnotations;
-
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace OnlineBookLibrary.Models
+namespace OnlineBookLibrary.Models;
+
+public partial class Genre
 {
-    public class Genre
-    {
-        [Key]
-        public int Id { get; set; }
-        public string Name { get; set; }
+    public int Id { get; set; }
 
-        public ICollection<Book>? books { get; set; }
-    }
+    public string Name { get; set; } = null!;
+
+    public virtual ICollection<Book> Books { get; } = new List<Book>();
 }

@@ -1,35 +1,25 @@
-﻿using Microsoft.Build.Framework;
-using System.ComponentModel.DataAnnotations;
-
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel;
 
-namespace OnlineBookLibrary.Models
+namespace OnlineBookLibrary.Models;
+
+public partial class User
 {
-    [PrimaryKey(nameof(Id))]
-    public class User
-    {
-        [Key]
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        public string Name { get; set; }
+    public string Name { get; set; } = null!;
 
-        public int Level { get; set; }
+    public int Level { get; set; }
 
-        public string Address { get; set; }
+    public string Address { get; set; } = null!;
 
-        public string Phone { get; set; }
+    public string Phone { get; set; } = null!;
 
-        public string Email { get; set; }
+    public string Email { get; set; } = null!;
 
-        [DisplayName("Login Name")]
-        public string LoginName { get; set; }
+    public string LoginName { get; set; } = null!;
 
-        public string Password { get; set; }
+    public string Password { get; set; } = null!;
 
-        public ICollection<Order>? orders { get; set; }
-    }
+    public virtual ICollection<Order> Orders { get; } = new List<Order>();
 }
