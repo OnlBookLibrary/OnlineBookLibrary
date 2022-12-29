@@ -15,7 +15,7 @@ public partial class OnlineBookLibraryDataContext : DbContext
     {
     }
 
-    public virtual DbSet<Account> Accounts { get; set; }
+    public virtual DbSet<AdminStaff> AdminStaffs { get; set; }
 
     public virtual DbSet<Book> Books { get; set; }
 
@@ -23,7 +23,7 @@ public partial class OnlineBookLibraryDataContext : DbContext
 
     public virtual DbSet<Order> Orders { get; set; }
 
-    public virtual DbSet<OrderDetails> OrderDetails { get; set; }
+    public virtual DbSet<OrderDetail> OrderDetails { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
 
@@ -35,25 +35,24 @@ public partial class OnlineBookLibraryDataContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Account>(entity =>
+        modelBuilder.Entity<AdminStaff>(entity =>
         {
+            entity.HasKey(e => e.AccountId);
+
+            entity.ToTable("AdminStaff");
+
             entity.Property(e => e.AccountId).HasColumnName("AccountID");
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Email).HasMaxLength(50);
             entity.Property(e => e.FullName).HasMaxLength(150);
-            entity.Property(e => e.LastLogin).HasColumnType("datetime");
             entity.Property(e => e.Password).HasMaxLength(50);
             entity.Property(e => e.Phone)
                 .HasMaxLength(12)
                 .IsUnicode(false);
             entity.Property(e => e.RoleId).HasColumnName("RoleID");
-            entity.Property(e => e.Salt)
-                .HasMaxLength(6)
-                .IsFixedLength();
 
-            entity.HasOne(d => d.Role).WithMany(p => p.Accounts)
+            entity.HasOne(d => d.Role).WithMany(p => p.AdminStaffs)
                 .HasForeignKey(d => d.RoleId)
-                .HasConstraintName("FK_Accounts_Role");
+                .HasConstraintName("FK_AdminStaff_Role");
         });
 
         modelBuilder.Entity<Book>(entity =>
@@ -86,7 +85,7 @@ public partial class OnlineBookLibraryDataContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.Orders).HasForeignKey(d => d.UserId);
         });
 
-        modelBuilder.Entity<OrderDetails>(entity =>
+        modelBuilder.Entity<OrderDetail>(entity =>
         {
             entity.HasIndex(e => e.BookId, "IX_OrderDetails_BookId");
 

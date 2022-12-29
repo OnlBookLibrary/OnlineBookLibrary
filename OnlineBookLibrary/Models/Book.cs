@@ -23,5 +23,5 @@ public partial class Book
 
     public virtual Genre Genre { get; set; } = null!;
 
-    public virtual ICollection<OrderDetails> OrderDetails { get; } = new List<OrderDetails>();
+    public virtual ICollection<OrderDetail> OrderDetails { get; } = new List<OrderDetail>();
 }

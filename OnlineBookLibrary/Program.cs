@@ -6,7 +6,7 @@ using OnlineBookLibrary.Data;
 using OnlineBookLibrary.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<OnlineBookLibraryContext>(options =>
+builder.Services.AddDbContext<OnlineBookLibraryDataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("OnlineBookLibraryContext") ?? throw new InvalidOperationException("Connection string 'OnlineBookLibraryContext' not found.")));
 
 // Add services to the container.
