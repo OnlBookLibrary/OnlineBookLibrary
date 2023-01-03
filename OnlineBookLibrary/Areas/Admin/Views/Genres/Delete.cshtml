@@ -1,4 +1,4 @@
-﻿@model OnlineBookLibrary.Models.Role
+﻿@model OnlineBookLibrary.Models.Genre
 
 @{
     ViewData["Title"] = "Delete";
@@ -8,7 +8,7 @@
 <div class="container" style="padding-top: 100px;  min-height: 80vh">
     <div class="row">
         <div class="col-md-12">
-            <h1>Delete Roles</h1>
+            <h1>Delete Genre</h1>
         </div>
     </div>
     <hr />
@@ -16,21 +16,15 @@
         <div class="col-md-12">
             <dl class="dl-horizontal">
                 <dt>
-                    @Html.DisplayNameFor(model => model.RoleName)
+                    @Html.DisplayNameFor(model => model.Name)
                 </dt>
                 <dd>
-                    @Html.DisplayFor(model => model.RoleName)
-                </dd>
-                <dt>
-                    @Html.DisplayNameFor(model => model.Description)
-                </dt>
-                <dd>
-                    @Html.DisplayFor(model => model.Description)
+                    @Html.DisplayFor(model => model.Name)
                 </dd>
             </dl>
 
             <form asp-action="Delete">
-                <input type="hidden" asp-for="RoleId" />
+                <input type="hidden" asp-for="Id" />
                 <input type="submit" value="Delete" class="btn btn-default" /> |
                 <a asp-action="Index">Back to List</a>
             </form>

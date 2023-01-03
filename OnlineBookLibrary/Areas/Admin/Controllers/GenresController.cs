@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AspNetCoreHero.ToastNotification.Abstractions;
-using AspNetCoreHero.ToastNotification.Notyf;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,91 +11,89 @@ using OnlineBookLibrary.Models;
 namespace OnlineBookLibrary.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class AdminStaffsController : Controller
+    public class GenresController : Controller
     {
         private readonly OnlineBookLibraryDataContext _context;
         private INotyfService _notifyService;
-        public AdminStaffsController(OnlineBookLibraryDataContext context, INotyfService notifyService)
+        public GenresController(OnlineBookLibraryDataContext context, INotyfService notifyService)
         {
             _context = context;
             _notifyService = notifyService;
         }
 
-        // GET: Admin/AdminStaffs
+        // GET: Admin/Genres
         public async Task<IActionResult> Index()
         {
-            var onlineBookLibraryDataContext = _context.AdminStaffs.Include(a => a.Role);
-            return View(await onlineBookLibraryDataContext.ToListAsync());
+            return _context.Genres != null ?
+                        View(await _context.Genres.ToListAsync()) :
+                        Problem("Entity set 'OnlineBookLibraryDataContext.Genres'  is null.");
         }
 
-        // GET: Admin/AdminStaffs/Details/5
+        // GET: Admin/Genres/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.AdminStaffs == null)
+            if (id == null || _context.Genres == null)
             {
                 return NotFound();
             }
 
-            var adminStaff = await _context.AdminStaffs
-                .Include(a => a.Role)
-                .FirstOrDefaultAsync(m => m.AccountId == id);
-            if (adminStaff == null)
+            var genre = await _context.Genres
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (genre == null)
             {
                 return NotFound();
             }
 
-            return View(adminStaff);
+            return View(genre);
         }
 
-        // GET: Admin/AdminStaffs/Create
+        // GET: Admin/Genres/Create
         public IActionResult Create()
         {
-            ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleId");
             return View();
         }
 
-        // POST: Admin/AdminStaffs/Create
+        // POST: Admin/Genres/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AccountId,Phone,Email,Password,FullName,RoleId")] AdminStaff adminStaff)
+        public async Task<IActionResult> Create([Bind("Id,Name")] Genre genre)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(adminStaff);
+                _context.Add(genre);
                 await _context.SaveChangesAsync();
+                _notifyService.Success("Create successfully");
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleId", adminStaff.RoleId);
-            return View(adminStaff);
+            return View(genre);
         }
 
-        // GET: Admin/AdminStaffs/Edit/5
+        // GET: Admin/Genres/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.AdminStaffs == null)
+            if (id == null || _context.Genres == null)
             {
                 return NotFound();
             }
 
-            var adminStaff = await _context.AdminStaffs.FindAsync(id);
-            if (adminStaff == null)
+            var genre = await _context.Genres.FindAsync(id);
+            if (genre == null)
             {
                 return NotFound();
             }
-            ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleId", adminStaff.RoleId);
-            return View(adminStaff);
+            return View(genre);
         }
 
-        // POST: Admin/AdminStaffs/Edit/5
+        // POST: Admin/Genres/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AccountId,Phone,Email,Password,FullName,RoleId")] AdminStaff adminStaff)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Genre genre)
         {
-            if (id != adminStaff.AccountId)
+            if (id != genre.Id)
             {
                 return NotFound();
             }
@@ -105,12 +102,12 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
             {
                 try
                 {
-                    _context.Update(adminStaff);
+                    _context.Update(genre);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AdminStaffExists(adminStaff.AccountId))
+                    if (!GenreExists(genre.Id))
                     {
                         return NotFound();
                     }
@@ -119,53 +116,53 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
                         throw;
                     }
                 }
+                _notifyService.Success("Edit successfully");
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleId", adminStaff.RoleId);
-            return View(adminStaff);
+            return View(genre);
         }
 
-        // GET: Admin/AdminStaffs/Delete/5
+        // GET: Admin/Genres/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.AdminStaffs == null)
+            if (id == null || _context.Genres == null)
             {
                 return NotFound();
             }
 
-            var adminStaff = await _context.AdminStaffs
-                .Include(a => a.Role)
-                .FirstOrDefaultAsync(m => m.AccountId == id);
-            if (adminStaff == null)
+            var genre = await _context.Genres
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (genre == null)
             {
                 return NotFound();
             }
 
-            return View(adminStaff);
+            return View(genre);
         }
 
-        // POST: Admin/AdminStaffs/Delete/5
+        // POST: Admin/Genres/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.AdminStaffs == null)
+            if (_context.Genres == null)
             {
-                return Problem("Entity set 'OnlineBookLibraryDataContext.AdminStaffs'  is null.");
+                return Problem("Entity set 'OnlineBookLibraryDataContext.Genres'  is null.");
             }
-            var adminStaff = await _context.AdminStaffs.FindAsync(id);
-            if (adminStaff != null)
+            var genre = await _context.Genres.FindAsync(id);
+            if (genre != null)
             {
-                _context.AdminStaffs.Remove(adminStaff);
+                _context.Genres.Remove(genre);
             }
 
             await _context.SaveChangesAsync();
+            _notifyService.Success("Delete successfully");
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AdminStaffExists(int id)
+        private bool GenreExists(int id)
         {
-            return (_context.AdminStaffs?.Any(e => e.AccountId == id)).GetValueOrDefault();
+            return (_context.Genres?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
