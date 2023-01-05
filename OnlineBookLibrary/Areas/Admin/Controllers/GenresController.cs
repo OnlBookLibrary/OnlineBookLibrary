@@ -38,7 +38,7 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
             }
 
             var genre = await _context.Genres
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.GenreId == id);
             if (genre == null)
             {
                 return NotFound();
@@ -93,7 +93,7 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Genre genre)
         {
-            if (id != genre.Id)
+            if (id != genre.GenreId)
             {
                 return NotFound();
             }
@@ -107,7 +107,7 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!GenreExists(genre.Id))
+                    if (!GenreExists(genre.GenreId))
                     {
                         return NotFound();
                     }
@@ -131,7 +131,7 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
             }
 
             var genre = await _context.Genres
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.GenreId == id);
             if (genre == null)
             {
                 return NotFound();
@@ -162,7 +162,7 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
 
         private bool GenreExists(int id)
         {
-            return (_context.Genres?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Genres?.Any(e => e.GenreId == id)).GetValueOrDefault();
         }
     }
 }

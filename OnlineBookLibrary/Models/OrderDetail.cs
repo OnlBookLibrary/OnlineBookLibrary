@@ -5,7 +5,7 @@ namespace OnlineBookLibrary.Models;
 
 public partial class OrderDetail
 {
-    public int Id { get; set; }
+    public int OderDetailId { get; set; }
 
     public int BookId { get; set; }
 

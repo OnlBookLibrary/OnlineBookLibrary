@@ -55,21 +55,21 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
                 .AsNoTracking()
                 .Where(b => b.GenreId == GenreID)
                 .Include(b => b.Genre)
-                .OrderByDescending(b => b.Id).ToList();
+                .OrderByDescending(b => b.BookId).ToList();
             }
             else
             {
                 IsBooks = _context.Books
                     .AsNoTracking()
                     .Include(b => b.Genre)
-                    .OrderByDescending(x => x.Id).ToList();
+                    .OrderByDescending(x => x.BookId).ToList();
 
             }
 
             PagedList<Book> models = new PagedList<Book>(IsBooks.AsQueryable(), pageNumber, pageSize);
             ViewBag.CurrentGenreID = GenreID;
             ViewBag.CurrentPage = pageNumber;
-            ViewData["TheLoai"] = new SelectList(_context.Genres, "Id", "Name", GenreID);
+            ViewData["TheLoai"] = new SelectList(_context.Genres, "GenreId", "GenreName", GenreID);
             return View(models);
         }
 
@@ -94,7 +94,7 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
 
             var book = await _context.Books
                 .Include(b => b.Genre)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.GenreId == id);
             if (book == null)
             {
                 return NotFound();
@@ -120,12 +120,12 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 //Save image to wwwroot/image
-                string wwwRoothPath = _hostEnvironment.WebRootPath;
-                string fileName = Path.GetFileNameWithoutExtension(path: book.ImageFile.FileName);
-                string extension = Path.GetExtension(path: book.ImageFile.FileName);
-                book.Image = fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
-                string path = Path.Combine(wwwRoothPath + "/Image/", fileName);
-                using (var fileStream = new FileStream(path, FileMode.Create)) { await book.ImageFile.CopyToAsync(fileStream); }
+                //string wwwRoothPath = _hostEnvironment.WebRootPath;
+                //string fileName = Path.GetFileNameWithoutExtension(path: book.ImageFile.FileName);
+                //string extension = Path.GetExtension(path: book.ImageFile.FileName);
+                //book.Image = fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
+                //string path = Path.Combine(wwwRoothPath + "/Image/", fileName);
+                //using (var fileStream = new FileStream(path, FileMode.Create)) { await book.ImageFile.CopyToAsync(fileStream); }
                 //Insert record
                 _context.Add(book);
                 await _context.SaveChangesAsync();
@@ -143,7 +143,7 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            var imagePath = Path.Combine(_hostEnvironment.WebRootPath, "image", book.Image);
+
             var book = await _context.Books.FindAsync(id);
             if (book == null)
             {
@@ -160,7 +160,7 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Author,Description,ImageFile,Price,Status,GenreId")] Book book)
         {
-            if (id != book.Id)
+            if (id != book.BookId)
             {
                 return NotFound();
             }
@@ -175,7 +175,7 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BookExists(book.Id))
+                    if (!BookExists(book.BookId))
                     {
                         return NotFound();
                     }
@@ -201,7 +201,7 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
 
             var book = await _context.Books
                 .Include(b => b.Genre)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.BookId == id);
             if (book == null)
             {
                 return NotFound();
@@ -236,7 +236,7 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
 
         private bool BookExists(int id)
         {
-            return (_context.Books?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Books?.Any(e => e.BookId == id)).GetValueOrDefault();
         }
     }
 }

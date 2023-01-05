@@ -21,7 +21,7 @@
                     ID
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Name)
+                    @Html.DisplayNameFor(model => model.GenreName)
                 </th>
                 <th></th>
             </tr>
@@ -31,15 +31,15 @@
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Id)
+                        @Html.DisplayFor(modelItem => item.GenreId)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Name)
+                        @Html.DisplayFor(modelItem => item.GenreName)
                     </td>
                     <td>
-                        <a class="btn btn-primary btn-tone m-r-5" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                        <a class="btn btn-secondary btn-tone m-r-5" asp-action="Details" asp-route-id="@item.Id">Details</a>
-                        <a class="btn btn-success btn-tone m-r-5" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a class="btn btn-primary btn-tone m-r-5" asp-action="Edit" asp-route-id="@item.GenreId">Edit</a>
+                        <a class="btn btn-secondary btn-tone m-r-5" asp-action="Details" asp-route-id="@item.GenreId">Details</a>
+                        <a class="btn btn-success btn-tone m-r-5" asp-action="Delete" asp-route-id="@item.GenreId">Delete</a>
                     </td>
                 </tr>
             }

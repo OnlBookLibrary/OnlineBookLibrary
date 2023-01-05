@@ -5,11 +5,9 @@ namespace OnlineBookLibrary.Models;
 
 public partial class User
 {
-    public int Id { get; set; }
+    public int UserId { get; set; }
 
-    public string Name { get; set; } = null!;
-
-    public int Level { get; set; }
+    public string UserName { get; set; } = null!;
 
     public string Address { get; set; } = null!;
 
@@ -17,9 +15,11 @@ public partial class User
 
     public string Email { get; set; } = null!;
 
-    public string LoginName { get; set; } = null!;
-
     public string Password { get; set; } = null!;
 
+    public int? RoleId { get; set; }
+
     public virtual ICollection<Order> Orders { get; } = new List<Order>();
+
+    public virtual Role? Role { get; set; }
 }
