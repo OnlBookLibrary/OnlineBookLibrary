@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OnlineBookLibrary.Migrations
 {
     /// <inheritdoc />
-    public partial class initCreate : Migration
+    public partial class acuupdatedi : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,39 +15,34 @@ namespace OnlineBookLibrary.Migrations
                 name: "Genre",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    GenreID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    GenreName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Genre", x => x.Id);
+                    table.PrimaryKey("PK_Genre", x => x.GenreID);
                 });
 
             migrationBuilder.CreateTable(
-                name: "User",
+                name: "Role",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    RoleID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Level = table.Column<int>(type: "int", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LoginName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    RoleName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.Id);
+                    table.PrimaryKey("PK_Role", x => x.RoleID);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Book",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    BookID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Author = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
@@ -55,37 +50,59 @@ namespace OnlineBookLibrary.Migrations
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    GenreId = table.Column<int>(type: "int", nullable: false)
+                    GenreID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Book", x => x.Id);
+                    table.PrimaryKey("PK_Book", x => x.BookID);
                     table.ForeignKey(
-                        name: "FK_Book_Genre_GenreId",
-                        column: x => x.GenreId,
+                        name: "FK_Book_Genre",
+                        column: x => x.GenreID,
                         principalTable: "Genre",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "GenreID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "User",
+                columns: table => new
+                {
+                    UserID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RoleID = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_User", x => x.UserID);
+                    table.ForeignKey(
+                        name: "FK_User_Role",
+                        column: x => x.RoleID,
+                        principalTable: "Role",
+                        principalColumn: "RoleID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Order",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    OrderID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    UserID = table.Column<int>(type: "int", nullable: false),
                     BorrowDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Order", x => x.Id);
+                    table.PrimaryKey("PK_Order", x => x.OrderID);
                     table.ForeignKey(
                         name: "FK_Order_User_UserId",
-                        column: x => x.UserId,
+                        column: x => x.UserID,
                         principalTable: "User",
-                        principalColumn: "Id",
+                        principalColumn: "UserID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -93,47 +110,52 @@ namespace OnlineBookLibrary.Migrations
                 name: "OrderDetails",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    OderDetailID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    BookId = table.Column<int>(type: "int", nullable: false),
-                    OrderId = table.Column<int>(type: "int", nullable: false)
+                    BookID = table.Column<int>(type: "int", nullable: false),
+                    OrderID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderDetails", x => x.Id);
+                    table.PrimaryKey("PK_OrderDetails", x => x.OderDetailID);
                     table.ForeignKey(
                         name: "FK_OrderDetails_Book_BookId",
-                        column: x => x.BookId,
+                        column: x => x.BookID,
                         principalTable: "Book",
-                        principalColumn: "Id",
+                        principalColumn: "BookID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_OrderDetails_Order_OrderId",
-                        column: x => x.OrderId,
+                        column: x => x.OrderID,
                         principalTable: "Order",
-                        principalColumn: "Id",
+                        principalColumn: "OrderID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Book_GenreId",
                 table: "Book",
-                column: "GenreId");
+                column: "GenreID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Order_UserId",
                 table: "Order",
-                column: "UserId");
+                column: "UserID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderDetails_BookId",
                 table: "OrderDetails",
-                column: "BookId");
+                column: "BookID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderDetails_OrderId",
                 table: "OrderDetails",
-                column: "OrderId");
+                column: "OrderID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_User_RoleID",
+                table: "User",
+                column: "RoleID");
         }
 
         /// <inheritdoc />
@@ -153,6 +175,9 @@ namespace OnlineBookLibrary.Migrations
 
             migrationBuilder.DropTable(
                 name: "User");
+
+            migrationBuilder.DropTable(
+                name: "Role");
         }
     }
 }
