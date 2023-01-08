@@ -20,24 +20,25 @@
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <input type="hidden" asp-for="RoleId" />
                         <div class="form-group">
-                            <label asp-for="RoleName" class="control-label"></label>
+                            <dt>
+                                Role Name
+                            </dt>
                             <input asp-for="RoleName" class="form-control" />
                             <span asp-validation-for="RoleName" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Description" class="control-label"></label>
+                            <dt>
+                                Description
+                            </dt>
                             <input asp-for="Description" class="form-control" />
                             <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
-                            <input type="submit" value="Save" class="btn btn-default" />
+                        <div style="padding-top:10px; padding-bottom:10px">
+                            <button type="submit" value="Create" class="btn btn-success">Save</button>
+                            <button type="button" class="btn btn-primary"><a asp-action="Index" style="color: white">Back to List</a></button>
                         </div>
                     </form>
                 </div>
-            </div>
-
-            <div>
-                <a asp-action="Index">Back to List</a>
             </div>
         </div>
     </div>

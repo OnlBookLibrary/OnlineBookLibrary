@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel;
 
 namespace OnlineBookLibrary.Models;
 
@@ -12,9 +14,11 @@ public partial class Book
     public string? Author { get; set; }
 
     public string? Description { get; set; }
-
+    [DisplayName("Image Name")]
     public string? Image { get; set; }
-
+    [NotMapped]
+    [DisplayName("Upload File")]
+    public IFormFile ImageFile { get; set; }
     public double? Price { get; set; }
 
     public string? Status { get; set; }

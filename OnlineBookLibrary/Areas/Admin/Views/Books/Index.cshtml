@@ -1,72 +1,172 @@
-﻿@model IEnumerable<OnlineBookLibrary.Models.Book>
+﻿@using PagedList.Core.Mvc
+@model PagedList.Core.IPagedList<OnlineBookLibrary.Models.Book>
 
 @{
-    ViewData["Title"] = "Index";
+    int CurrentPage = ViewBag.CurrentPage;
+    ViewData["Title"] = "Index Books" + CurrentPage;
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2>Index</h2>
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="Books" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-Home m-r-5"></i>Home</a>
+            <span class="breadcrumb-item active">Book List : page @CurrentPage</span>
+        </nav>
+    </div>
+</div>
+<div class="container" style="padding-top: 30px;  min-height: 80vh">
+    <div class="row">
+        <div class="col-md-12" style="float: right;">
+            <h4>
+                Books
+                <a asp-action="Create" style="float: right;" class="btn btn-primary"><span>Add Book</span></a>
+            </h4>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row m-b-30">
+            <div class="col-md-7">
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="input-affix m-v-10">
+                            <i class="prefix-icon anticon anticon-search opacity-04"></i>
+                            <input id="keyword" name="keyword" type="text" class="form-control" placeholder="Tìm kiếm sản phẩm">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="d-md-flex">
+                    <div class="m-b-10 m-r-15">
+                        <select class="custom-select" id="txtGenreID" name="txtGenreID" style="min-width: 180px; " asp-items="ViewBag.TheLoai">
+                            <option disabled selected>Genres</option>
+                            <option value="all">All</option>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Author)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Image)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Genre)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Author)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Image)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Genre.GenreId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.BookId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.BookId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.BookId">Delete</a>
-            </td>
-        </tr>
+                        </select>
+                    </div>
+                  
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table id="tbbooks" class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                ID
+                            </th>
+                            <th></th>
+                            <th>
+                                Title
+                            </th>
+                            <th>
+                                Author
+                            </th>
+                            <th>
+                                Price
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                            <th>
+                                Genre
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="records_table">
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.BookId)
+                                </td>
+                                <td>
+                                    <img src="@("~/Image/" + item.Image)" asp-append-version="true" width="80" height="100px" />
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Title)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Author)
+                                </td>
+                                <td>
+                                    @item.Price
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Genre.GenreName)
+                                </td>
+                                <td>
+                                    <a class="btn btn-primary btn-tone m-r-5" asp-action="Edit" asp-route-id="@item.BookId">Edit</a>
+                                    <a class="btn btn-success  btn-tone m-r-5" asp-action="Details" asp-route-id="@item.BookId">Details</a>
+                                    <a class="btn btn-danger btn-tone m-r-5" asp-action="Delete" asp-route-id="@item.BookId">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <pager class="pager-container" list="@Model" asp-area="Admin" asp-route-GenreID="@ViewBag.CurrentGenreID" asp-asp-controller="Books" asp-action="Index" />
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            jQuery("#txtGenreID").change(function () {
+                var genreID = jQuery(this).children(":selected").attr("value");
+                genreID = parseFloat(genreID);
+                $('#txtGenreID option')
+                    .removeAttr('selected');
+                $("#txtGenreID  > [value=" + genreID + "]").attr("selected", "true");
+                $.ajax({
+                    url: '/Admin/Books/Filtter',
+                    datatype: "json",
+                    type: "GET",
+                    data: {
+                        GenreID: genreID
+                    },
+                    async: true,
+                    success: function (results) {
+                        if (results.status == "success") {
+                            window.location.href = results.redirectUrl;
+                        }
+                    },
+                    error: function (xhr) {
+                        alert('error');
+                    }
+
+
+                });
+            });
+        });
+        $("#keyword").keyup(function () {
+            var strkeyword = $('#keyword').val();
+            $.ajax({
+                url: '/Admin/Search/FindProduct/',
+                datatype: "json",
+                type: "POST",
+                data: { keyword: strkeyword },
+                async: true,
+                success: function (results) {
+                    $("#records_table").html("");
+                    $("#records_table").html(results);
+                },
+                error: function (xhr) {
+                    alert('error');
+                }
+            });
+        });
+
+    </script>
+
 }
-    </tbody>
-</table>

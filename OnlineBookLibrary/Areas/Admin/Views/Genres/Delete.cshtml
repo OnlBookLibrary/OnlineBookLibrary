@@ -8,16 +8,14 @@
 <div class="container" style="padding-top: 100px;  min-height: 80vh">
     <div class="row">
         <div class="col-md-12">
-            <h1>Delete Genre</h1>
+            <h1>Delete Book</h1>
         </div>
     </div>
     <hr />
     <div class="row">
         <div class="col-md-12">
             <dl class="dl-horizontal">
-                <dt>
-                    @Html.DisplayNameFor(model => model.GenreName)
-                </dt>
+                <dt>Genre Name</dt>
                 <dd>
                     @Html.DisplayFor(model => model.GenreName)
                 </dd>
@@ -25,8 +23,10 @@
 
             <form asp-action="Delete">
                 <input type="hidden" asp-for="GenreId" />
-                <input type="submit" value="Delete" class="btn btn-default" /> |
-                <a asp-action="Index">Back to List</a>
+                <div style="padding-top:10px; padding-bottom:10px">
+                    <button type="submit" value="Delete" class="btn btn-danger">Delete</button>
+                    <button type="button" class="btn btn-primary"><a asp-action="Index" style="color: white">Back to List</a></button>
+                </div>
             </form>
         </div>
     </div>
