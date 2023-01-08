@@ -32,6 +32,7 @@ namespace OnlineBookLibrary.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookId"));
 
                     b.Property<string>("Author")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -39,14 +40,15 @@ namespace OnlineBookLibrary.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<int?>("GenreId")
+                    b.Property<int>("GenreId")
                         .HasColumnType("int")
                         .HasColumnName("GenreID");
 
                     b.Property<string>("Image")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("Price")
+                    b.Property<double>("Price")
                         .HasColumnType("float");
 
                     b.Property<string>("Status")
@@ -54,6 +56,7 @@ namespace OnlineBookLibrary.Migrations
                         .HasColumnName("status");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -193,7 +196,7 @@ namespace OnlineBookLibrary.Migrations
 
                     b.HasKey("UserId");
 
-                    b.HasIndex(new[] { "RoleId" }, "IX_User_RoleID");
+                    b.HasIndex("RoleId");
 
                     b.ToTable("User", (string)null);
                 });
@@ -203,6 +206,7 @@ namespace OnlineBookLibrary.Migrations
                     b.HasOne("OnlineBookLibrary.Models.Genre", "Genre")
                         .WithMany("Books")
                         .HasForeignKey("GenreId")
+                        .IsRequired()
                         .HasConstraintName("FK_Book_Genre");
 
                     b.Navigation("Genre");
