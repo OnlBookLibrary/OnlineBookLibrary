@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OnlineBookLibrary.Models;
 using System.Diagnostics;
 
@@ -11,14 +12,14 @@ namespace OnlineBookLibrary.Controllers
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
-        }
+		}
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+		public IActionResult Index()
+		{
+			return View();
+		}
 
-        public IActionResult Privacy()
+		public IActionResult Privacy()
         {
             return View();
         }

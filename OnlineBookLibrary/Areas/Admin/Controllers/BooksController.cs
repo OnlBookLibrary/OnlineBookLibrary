@@ -6,6 +6,7 @@ using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using OnlineBookLibrary.Extentions;
 using OnlineBookLibrary.Models;
 using PagedList.Core;
 
@@ -20,20 +21,30 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
 
         public IWebHostEnvironment HostEnviroment { get; }
 
-        public BooksController(OnlineBookLibraryDataContext context, INotyfService notifyService, IWebHostEnvironment hostEnviroment)
+		public BooksController(OnlineBookLibraryDataContext context, INotyfService notifyService, IWebHostEnvironment hostEnviroment)
         {
             _context = context;
             _notifyService = notifyService;
             this._hostEnvironment = hostEnviroment;
+
         }
 
-        // GET: Admin/Books
-        public IActionResult Index(int page = 1, int GenreID = 0)
+		// GET: Admin/Books
+		[SessionFilter]
+		public IActionResult Index(string searchString, int page = 1, int GenreID = 0)
         {
             List<SelectListItem> IsTrangThai = new List<SelectListItem>();
-            IsTrangThai.Add(new SelectListItem() { Text = "Còn Hàng", Value = "1" });
-            IsTrangThai.Add(new SelectListItem() { Text = "Hết Hàng", Value = "0" });
+            IsTrangThai.Add(new SelectListItem() { Text = "Available", Value = "1" });
+            IsTrangThai.Add(new SelectListItem() { Text = "Out of stock", Value = "0" });
             ViewData["IsTrangThai"] = IsTrangThai;
+
+            var books = from b in _context.Books
+                        select b;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                books = books.Where(s => s.Title!.Contains(searchString));
+            }
+
 
             var pageNumber = page;
             var pageSize = 5;
@@ -44,16 +55,16 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
             {
                 IsBooks = _context.Books
                 .AsNoTracking()
-                .Where(x => x.GenreId == GenreID)
-                .Include(x => x.Genre)
-                .OrderBy(x => x.BookId).ToList();
+                .Where(b => b.GenreId == GenreID)
+                .Include(b => b.Genre)
+                .OrderByDescending(b => b.BookId).ToList();
             }
             else
             {
                 IsBooks = _context.Books
                     .AsNoTracking()
-                    .Include(x => x.Genre)
-                    .OrderBy(x => x.BookId).ToList();
+                    .Include(b => b.Genre)
+                    .OrderByDescending(x => x.BookId).ToList();
 
             }
 
@@ -63,9 +74,10 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
             ViewData["TheLoai"] = new SelectList(_context.Genres, "GenreId", "GenreName", GenreID);
             return View(models);
         }
-        public IActionResult Filtter(int GenreID = 0)
+		[SessionFilter]
+		public IActionResult Filtter(int GenreID = 0)
         {
-            var url = $"/Admin/Books?GenreID={GenreID}";
+            var url = $"/Amin/Books?GenreID = {GenreID}";
             if (GenreID == 0)
             {
                 url = $"/Admin/Books";
@@ -74,8 +86,9 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
             return Json(new { status = "success", redirectUrl = url });
         }
 
-        // GET: Admin/Books/Details/5
-        public async Task<IActionResult> Details(int? id)
+		// GET: Admin/Books/Details/5
+		[SessionFilter]
+		public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Books == null)
             {
@@ -84,18 +97,20 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
 
             var book = await _context.Books
                 .Include(b => b.Genre)
-                .FirstOrDefaultAsync(m => m.BookId == id);
+                .FirstOrDefaultAsync(m => m.GenreId == id);
             if (book == null)
             {
                 return NotFound();
             }
+
             return View(book);
         }
 
-        // GET: Admin/Books/Create
-        public IActionResult Create()
+		// GET: Admin/Books/Create
+		[SessionFilter]
+		public IActionResult Create()
         {
-            ViewData["TheLoai"] = new SelectList(_context.Genres, "GenreId", "GenreName");
+            ViewData["GenreId"] = new SelectList(_context.Genres, "Id", "Id");
             return View();
         }
 
@@ -103,32 +118,32 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BookId,Title,Author,Description,Image,ImageFile,Price,Status,GenreId")] Book book)
+		[SessionFilter]
+		[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,Title,Author,Description,Image,ImageFile,Price,Status,GenreId")] Book book)
         {
             if (ModelState.IsValid)
-
             {
-                string wwwRoothPath = _hostEnvironment.WebRootPath;
-                string fileName = Path.GetFileNameWithoutExtension(path: book.ImageFile.FileName);
-                string extension = Path.GetExtension(path: book.ImageFile.FileName);
-                book.Image = fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
-                string path = Path.Combine(wwwRoothPath + "/Image/", fileName);
-                using (var fileStream = new FileStream(path, FileMode.Create))
-                {
-                    await book.ImageFile.CopyToAsync(fileStream);
-                }
+                //Save image to wwwroot/image
+                //string wwwRoothPath = _hostEnvironment.WebRootPath;
+                //string fileName = Path.GetFileNameWithoutExtension(path: book.ImageFile.FileName);
+                //string extension = Path.GetExtension(path: book.ImageFile.FileName);
+                //book.Image = fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
+                //string path = Path.Combine(wwwRoothPath + "/Image/", fileName);
+                //using (var fileStream = new FileStream(path, FileMode.Create)) { await book.ImageFile.CopyToAsync(fileStream); }
+                //Insert record
                 _context.Add(book);
                 await _context.SaveChangesAsync();
                 _notifyService.Success("Create successfully");
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TheLoai"] = new SelectList(_context.Genres, "GenreId", "GenreName", book.GenreId);
+            ViewData["GenreId"] = new SelectList(_context.Genres, "Id", "Id", book.GenreId);
             return View(book);
         }
 
-        // GET: Admin/Books/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+		// GET: Admin/Books/Edit/5
+		[SessionFilter]
+		public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Books == null)
             {
@@ -140,7 +155,7 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            ViewData["TheLoai"] = new SelectList(_context.Genres, "GenreId", "GenreName", book.GenreId);
+            ViewData["GenreId"] = new SelectList(_context.Genres, "Id", "Id", book.GenreId);
             return View(book);
         }
 
@@ -148,8 +163,9 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BookId,Title,Author,Description,Image,ImageFile,Price,Status,GenreId")] Book book)
+		[SessionFilter]
+		[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Author,Description,ImageFile,Price,Status,GenreId")] Book book)
         {
             if (id != book.BookId)
             {
@@ -158,17 +174,9 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
+
                 try
                 {
-                    string wwwRoothPath = _hostEnvironment.WebRootPath;
-                    string fileName = Path.GetFileNameWithoutExtension(path: book.ImageFile.FileName);
-                    string extension = Path.GetExtension(path: book.ImageFile.FileName);
-                    book.Image = fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
-                    string path = Path.Combine(wwwRoothPath + "/Image/", fileName);
-                    using (var fileStream = new FileStream(path, FileMode.Create))
-                    {
-                        await book.ImageFile.CopyToAsync(fileStream);
-                    }
                     _context.Update(book);
                     await _context.SaveChangesAsync();
                 }
@@ -186,12 +194,13 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
                 _notifyService.Success("Edit successfully");
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TheLoai"] = new SelectList(_context.Genres, "GenreId", "GenreName", book.GenreId);
+            ViewData["GenreId"] = new SelectList(_context.Genres, "Id", "Id", book.GenreId);
             return View(book);
         }
 
-        // GET: Admin/Books/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+		// GET: Admin/Books/Delete/5
+		[SessionFilter]
+		public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Books == null)
             {
@@ -211,7 +220,8 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
 
         // POST: Admin/Books/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+		[SessionFilter]
+		[ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Books == null)
@@ -219,6 +229,7 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
                 return Problem("Entity set 'OnlineBookLibraryDataContext.Books'  is null.");
             }
             var book = await _context.Books.FindAsync(id);
+            //delete image form wwwroot
             var imagePath = Path.Combine(_hostEnvironment.WebRootPath, "image", book.Image);
             if (System.IO.File.Exists(imagePath))
                 System.IO.File.Delete(imagePath);
@@ -226,12 +237,6 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
             {
                 _context.Books.Remove(book);
             }
-
-            if (book != null)
-            {
-                _context.Books.Remove(book);
-            }
-
 
             await _context.SaveChangesAsync();
             _notifyService.Success("Delete successfully");

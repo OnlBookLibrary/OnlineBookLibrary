@@ -1,7 +1,7 @@
 ﻿@model OnlineBookLibrary.Models.Book
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Books";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
@@ -16,55 +16,53 @@
         <div class="col-md-12">
             <div class="row">
                 <div class="col-md-4">
-                    <form asp-action="Edit" enctype="multipart/form-data">
+                    <form asp-action="Edit">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <input type="hidden" asp-for="BookId" />
                         <div class="form-group">
-                            <dt>TiTle</dt>
+                            <label asp-for="Title" class="control-label"></label>
                             <input asp-for="Title" class="form-control" />
                             <span asp-validation-for="Title" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <dt>Author</dt>
+                            <label asp-for="Author" class="control-label"></label>
                             <input asp-for="Author" class="form-control" />
                             <span asp-validation-for="Author" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <dt>Description</dt>
+                            <label asp-for="Description" class="control-label"></label>
                             <input asp-for="Description" class="form-control" />
                             <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
-                        <div class="form-group" style="padding-top:10px; padding-bottom:10px">
-                            <input type="hidden" asp-for="Image" />
-                            <dt>
-                                Cover Image
-                            </dt>
-                            <input asp-for="ImageFile" accept="image/*" />
+                         @*<div class="form-group">
+                            <label asp-for="ImageFile" class="control-label"></label>
+                            <input asp-for="ImageFile" accept="image/" />
                             <span asp-validation-for="ImageFile" class="text-danger"></span>
-                        </div>
+                        </div>*@
                         <div class="form-group">
-                            <dt>Price</dt>
+                            <label asp-for="Price" class="control-label"></label>
                             <input asp-for="Price" class="form-control" />
                             <span asp-validation-for="Price" class="text-danger"></span>
                         </div>
-                        <div class="form-group" style="padding-top:10px; padding-bottom:10px">
+                        <div class="form-group">
                             <label asp-for="Status" class="control-label"></label>
-                            <select class="custom-select" asp-for="Status" style="min-width: 200px;">
-                                <option selected>Còn Hàng</option>
-                                <option>Hết Hàng</option>
-                            </select>
+                            <input asp-for="Status" class="form-control" />
+                            <span asp-validation-for="Status" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <dt>Genre</dt>
-                            <select asp-for="GenreId" class="form-control" asp-items="ViewBag.TheLoai"></select>
+                            <label asp-for="GenreId" class="control-label"></label>
+                            <select asp-for="GenreId" class="form-control" asp-items="ViewBag.GenreId"></select>
                             <span asp-validation-for="GenreId" class="text-danger"></span>
                         </div>
-                        <div style="padding-top:10px; padding-bottom:10px">
-                            <button type="submit" value="Create" class="btn btn-success">Save</button>
-                            <button type="button" class="btn btn-primary"><a asp-action="Index" style="color: white">Back to List</a></button>
+                        <div class="form-group">
+                            <input type="submit" value="Save" class="btn btn-default" />
                         </div>
                     </form>
                 </div>
+            </div>
+
+            <div>
+                <a asp-action="Index">Back to List</a>
             </div>
         </div>
     </div>

@@ -1,15 +1,10 @@
 ﻿@model List<Book>
+
 @if (Model != null)
 {
     @foreach (var item in Model)
     {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.BookId)
-            </td>
-            <td>
-                <img src="@("~/Image/" + item.Image)" asp-append-version="true" width="80" height="100px" />
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
@@ -17,7 +12,13 @@
                 @Html.DisplayFor(modelItem => item.Author)
             </td>
             <td>
-                @item.Price
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Image)
+            </td>
+            <td>
+                @item.Price.ToString("#,##0") VNĐ
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Status)

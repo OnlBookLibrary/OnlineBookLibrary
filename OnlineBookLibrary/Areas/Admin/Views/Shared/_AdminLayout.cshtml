@@ -10,7 +10,7 @@
 
     <!-- Favicon -->
     <link href="~/adminassests/img/favicon.ico" rel="icon">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,7 +22,7 @@
 
     <!-- Libraries Stylesheet -->
     <link href="~/adminassests/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    
+    <link href="~/adminassests/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="~/adminassests/css/bootstrap.min.css" rel="stylesheet">
@@ -125,7 +125,7 @@
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
                             <a href="#" class="dropdown-item">My Profile</a>
                             <a href="#" class="dropdown-item">Settings</a>
-                            <a href="#" class="dropdown-item">Log Out</a>
+                            <a asp-action="Logout" asp-controller="Accounts" asp-area="" class="dropdown-item">Log Out</a>
                         </div>
                     </div>
                 </div>

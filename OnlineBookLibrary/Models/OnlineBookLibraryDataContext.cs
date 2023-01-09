@@ -108,8 +108,6 @@ public partial class OnlineBookLibraryDataContext : DbContext
         {
             entity.ToTable("User");
 
-            entity.HasIndex(e => e.RoleId, "IX_User_RoleID");
-
             entity.Property(e => e.UserId).HasColumnName("UserID");
             entity.Property(e => e.RoleId).HasColumnName("RoleID");
 

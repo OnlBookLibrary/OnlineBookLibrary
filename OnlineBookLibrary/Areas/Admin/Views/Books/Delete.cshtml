@@ -1,7 +1,7 @@
 ﻿@model OnlineBookLibrary.Models.Book
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete Books";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
@@ -34,13 +34,13 @@
                     @Html.DisplayFor(model => model.Description)
                 </dd>
                 <dt>
-                    @Html.DisplayNameFor(model => model.Image)
+                    Image
                 </dt>
                 <dd>
                     <img src="@("~/Image/" + Model.Image)" asp-append-version="true" width="80" height="100px" />
                 </dd>
                 <dt>
-                    Price
+                    @Html.DisplayNameFor(model => model.Price)
                 </dt>
                 <dd>
                     @Html.DisplayFor(model => model.Price)
@@ -55,16 +55,14 @@
                     @Html.DisplayNameFor(model => model.Genre)
                 </dt>
                 <dd>
-                    @Html.DisplayFor(model => model.Genre.GenreName)
+                    @Html.DisplayFor(model => model.Genre.GenreId)
                 </dd>
             </dl>
 
             <form asp-action="Delete">
                 <input type="hidden" asp-for="BookId" />
-                <div style="padding-top:10px; padding-bottom:10px">
-                    <button type="submit" value="Delete" class="btn btn-danger">Delete</button>
-                    <button type="button" class="btn btn-primary"><a asp-action="Index" style="color: white">Back to List</a></button>
-                </div>
+                <input type="submit" value="Delete" class="btn btn-default" /> |
+                <a asp-action="Index">Back to List</a>
             </form>
         </div>
     </div>

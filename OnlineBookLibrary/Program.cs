@@ -4,8 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using OnlineBookLibrary.Data;
 using OnlineBookLibrary.Models;
+using OnLineBookLibrary.models;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(10);
+});
 builder.Services.AddDbContext<OnlineBookLibraryDataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("OnlineBookLibraryContext") ?? throw new InvalidOperationException("Connection string 'OnlineBookLibraryContext' not found.")));
 
@@ -16,9 +23,9 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
+	var services = scope.ServiceProvider;
 
-    //SeedData.Initialize(services);
+	SeedData.initialize(services);
 }
 
 // Configure the HTTP request pipeline.
@@ -36,6 +43,8 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+app.UseSession();
+
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllerRoute(
@@ -45,6 +54,12 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+    endpoints.MapAreaControllerRoute(
+                         name: "Admin",
+                         areaName: "Admin",
+                         pattern: "Admin/{controller=Home}/{action=Index}"
+                     );
 });
 
 app.Run();

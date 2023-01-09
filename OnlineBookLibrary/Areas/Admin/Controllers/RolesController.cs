@@ -7,6 +7,7 @@ using AspNetCoreHero.ToastNotification.Notyf;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using OnlineBookLibrary.Extentions;
 using OnlineBookLibrary.Models;
 
 namespace OnlineBookLibrary.Areas.Admin.Controllers
@@ -23,16 +24,18 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
             _notifyService = notifyService;
         }
 
-        // GET: Admin/Roles
-        public async Task<IActionResult> Index()
+		// GET: Admin/Roles
+		[SessionFilter]
+		public async Task<IActionResult> Index()
         {
               return _context.Roles != null ? 
                           View(await _context.Roles.ToListAsync()) :
                           Problem("Entity set 'OnlineBookLibraryDataContext.Roles'  is null.");
         }
 
-        // GET: Admin/Roles/Details/5
-        public async Task<IActionResult> Details(int? id)
+		// GET: Admin/Roles/Details/5
+		[SessionFilter]
+		public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Roles == null)
             {
@@ -49,8 +52,9 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
             return View(role);
         }
 
-        // GET: Admin/Roles/Create
-        public IActionResult Create()
+		// GET: Admin/Roles/Create
+		[SessionFilter]
+		public IActionResult Create()
         {
             return View();
         }
@@ -59,7 +63,8 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
+		[SessionFilter]
+		[ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("RoleId,RoleName,Description")] Role role)
         {
             if (ModelState.IsValid)
@@ -72,8 +77,9 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
             return View(role);
         }
 
-        // GET: Admin/Roles/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+		// GET: Admin/Roles/Edit/5
+		[SessionFilter]
+		public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Roles == null)
             {
@@ -92,7 +98,8 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
+		[SessionFilter]
+		[ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("RoleId,RoleName,Description")] Role role)
         {
             if (id != role.RoleId)
@@ -124,8 +131,9 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
             return View(role);
         }
 
-        // GET: Admin/Roles/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+		// GET: Admin/Roles/Delete/5
+		[SessionFilter]
+		public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Roles == null)
             {
@@ -144,7 +152,8 @@ namespace OnlineBookLibrary.Areas.Admin.Controllers
 
         // POST: Admin/Roles/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+		[SessionFilter]
+		[ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Roles == null)
